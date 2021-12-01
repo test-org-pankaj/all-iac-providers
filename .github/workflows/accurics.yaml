@@ -17,4 +17,4 @@ jobs:
           only_warn: true
           verbose: true
           webhook_url: http://localhost:8080/v1/api/terrascan
-          webhook_token: 65ce32c5-505d-4598-8e60-7fc8003d9706
+          webhook_token: 646214d3-ef9d-4269-8d15-ea9992e5ff98
