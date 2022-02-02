@@ -1,4 +1,4 @@
-resource "google_service_account" "default" {
+resource "google_service_account" "default-new" {
   account_id   = "service_account_id"
   display_name = "Service Account"
 }
