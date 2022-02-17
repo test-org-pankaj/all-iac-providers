@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 jobs:
   accurics-scan:
@@ -16,5 +16,5 @@ jobs:
         with:
           only_warn: true
           verbose: true
-          webhook_url: https://4f08-2402-8100-3097-10fd-8db2-fecd-5645-5632.ngrok.io/v1/api/terrascan
-          webhook_token: f8ba7d36-e9e1-45a7-9358-aa2955cca7f6
+          webhook_url: https://8330-103-141-116-118.ngrok.io/v1/api/terrascan
+          webhook_token: 705f5564-5455-4650-b8eb-67c149ac26ed
