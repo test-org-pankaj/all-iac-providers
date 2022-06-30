@@ -102,6 +102,32 @@ resource "aws_s3_bucket" "data" {
     git_repo             = "terragoat"
     yor_trace            = "0874007d-903a-4b4c-945f-c9c233e13243"
   })
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = "<master_kms_key_id>"
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  versioning {
+    enabled    = true
+    mfa_delete = true
+  }
 }
 
 resource "aws_s3_bucket_object" "data_object" {
@@ -144,6 +170,32 @@ resource "aws_s3_bucket" "financials" {
     yor_trace            = "0e012640-b597-4e5d-9378-d4b584aea913"
   })
 
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = "<master_kms_key_id>"
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  versioning {
+    enabled    = true
+    mfa_delete = true
+  }
 }
 
 resource "aws_s3_bucket" "operations" {
@@ -169,6 +221,23 @@ resource "aws_s3_bucket" "operations" {
     yor_trace            = "29efcf7b-22a8-4bd6-8e14-1f55b3a2d743"
   })
 
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = "<master_kms_key_id>"
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket" "data_science" {
@@ -192,6 +261,23 @@ resource "aws_s3_bucket" "data_science" {
     git_org              = "bridgecrewio"
     git_repo             = "terragoat"
     yor_trace            = "9a7c8788-5655-4708-bbc3-64ead9847f64"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = "<master_kms_key_id>"
+      }
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
   }
 }
 
@@ -223,4 +309,125 @@ resource "aws_s3_bucket" "logs" {
     git_repo             = "terragoat"
     yor_trace            = "01946fe9-aae2-4c99-a975-e9b0d3a4696c"
   })
+}
+
+resource "aws_s3_bucket_policy" "operationspolicy" {
+  bucket = aws_s3_bucket.operations.id
+
+  policy = <<POLICY
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                  "Sid": "operations-restrict-access-to-users-or-roles",
+                  "Effect": "Allow",
+                  "Principal": [
+                    {
+                       "AWS": [
+                          "<aws_policy_role_arn>"
+                        ]
+                    }
+                  ],
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::operations/*"
+              }
+            ]
+        }
+    POLICY
+}
+resource "aws_s3_bucket_policy" "financialspolicy" {
+  bucket = aws_s3_bucket.financials.id
+
+  policy = <<POLICY
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                  "Sid": "financials-restrict-access-to-users-or-roles",
+                  "Effect": "Allow",
+                  "Principal": [
+                    {
+                       "AWS": [
+                          "<aws_policy_role_arn>"
+                        ]
+                    }
+                  ],
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::financials/*"
+              }
+            ]
+        }
+    POLICY
+}
+resource "aws_s3_bucket_policy" "datapolicy" {
+  bucket = aws_s3_bucket.data.id
+
+  policy = <<POLICY
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                  "Sid": "data-restrict-access-to-users-or-roles",
+                  "Effect": "Allow",
+                  "Principal": [
+                    {
+                       "AWS": [
+                          "<aws_policy_role_arn>"
+                        ]
+                    }
+                  ],
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::data/*"
+              }
+            ]
+        }
+    POLICY
+}
+resource "aws_s3_bucket_policy" "logspolicy" {
+  bucket = aws_s3_bucket.logs.id
+
+  policy = <<POLICY
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                  "Sid": "logs-restrict-access-to-users-or-roles",
+                  "Effect": "Allow",
+                  "Principal": [
+                    {
+                       "AWS": [
+                          "<aws_policy_role_arn>"
+                        ]
+                    }
+                  ],
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::logs/*"
+              }
+            ]
+        }
+    POLICY
+}
+resource "aws_s3_bucket_policy" "data_sciencepolicy" {
+  bucket = aws_s3_bucket.data_science.id
+
+  policy = <<POLICY
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                  "Sid": "data_science-restrict-access-to-users-or-roles",
+                  "Effect": "Allow",
+                  "Principal": [
+                    {
+                       "AWS": [
+                          "<aws_policy_role_arn>"
+                        ]
+                    }
+                  ],
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::data_science/*"
+              }
+            ]
+        }
+    POLICY
 }
